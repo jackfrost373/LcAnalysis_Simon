@@ -40,56 +40,68 @@ for y in y_bin_temp:
 	
 
 # CREATES THE DATASET FOR GRAPHING 
-# NEED TO ADAPT THE CODE SO THAT AUTOMATES FOR CHANGE OF NUMBER OF BINS
 y_dataDict = {}
 pt_dataDict = {}
 for year in years:
-    y_dataDict[year] = {
-        "x" : [0,0,0,0],
-        "y" : [0,0,0,0],
-        "ex" : [0,0,0,0],
-        "ey" : [0,0,0,0]
-    }
-    pt_dataDict[year] = {
-        "x" : [0,0,0,0,0,0,0],
-        "y" : [0,0,0,0,0,0,0],
-        "ex" : [0,0,0,0,0,0,0],
-        "ey" : [0,0,0,0,0,0,0]
-    }
-    for pol in combinedDict[year]:
-        i = 0
-        for file in sorted(combinedDict[year][pol]):
-            if ("ybin" in file) and ("Xic" in file):
-                y = (float(file[:-5].split('_')[-1].split('-')[0])+float(file[:-5].split('_')[-1].split('-')[1]))/2
-                y_err = (float(file[:-5].split('_')[-1].split('-')[1])-float(file[:-5].split('_')[-1].split('-')[0]))/2
-                ratio = combinedDict[year][pol][file]["yield_val"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"]
-                ratio_err = math.sqrt((combinedDict[year][pol][file]["yield_err"]/combinedDict[year][pol][file]["yield_val"])**2 + (combinedDict[year][pol]['Lc'+file[3:]]["yield_err"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"])**2)
-                
-                y_dataDict[year]["x"][i] = y
-                y_dataDict[year]["y"][i] += ratio
-                y_dataDict[year]["ex"][i] = y_err
-                if y_dataDict[year]["ey"][i] == 0:
-                    y_dataDict[year]["ey"][i] += ratio_err
-                else:
-                    y_dataDict[year]["ey"][i] = math.sqrt(y_dataDict[year]["ey"][i]**2 + ratio_err**2)
-                
-                i+=1
+	y_dataDict[year] = {
+		"x" : [],
+		"y" : [],
+		"ex" : [],
+		"ey" : []
+	}
+
+	for points in y_arr_str:
+		y_dataDict[year]['x'].append(0)
+		y_dataDict[year]['y'].append(0)
+		y_dataDict[year]['ex'].append(0)
+		y_dataDict[year]['ey'].append(0)
+
+	pt_dataDict[year] = {
+		"x" : [],
+		"y" : [],
+		"ex" : [],
+		"ey" : []
+	}
+	for points in pt_arr_str: #initializes the dataset to zero everywhere
+		pt_dataDict[year]['x'].append(0) # => "x" : [0,0,0,0,0,0,0] as theres 7 pt bins
+		pt_dataDict[year]['y'].append(0)
+		pt_dataDict[year]['ex'].append(0)
+		pt_dataDict[year]['ey'].append(0)
     
-    for pol in combinedDict[year]:
-        i = 0
-        for file in sorted(combinedDict[year][pol]):
-            if ("ptbin" in file) and ("Xic" in file):
-                pt = (float(file[:-5].split('_')[-1].split('-')[0])+float(file[:-5].split('_')[-1].split('-')[1]))/2
-                pt_err = (float(file[:-5].split('_')[-1].split('-')[1])-float(file[:-5].split('_')[-1].split('-')[0]))/2
-                ratio = combinedDict[year][pol][file]["yield_val"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"]
-                ratio_err = math.sqrt((combinedDict[year][pol][file]["yield_err"]/combinedDict[year][pol][file]["yield_val"])**2 + (combinedDict[year][pol]['Lc'+file[3:]]["yield_err"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"])**2)
-                
-                pt_dataDict[year]["x"][i] = pt
-                pt_dataDict[year]["y"][i] += ratio
-                pt_dataDict[year]["ex"][i] = pt_err
-                pt_dataDict[year]["ey"][i] += ratio_err
-                
-                i+=1
+	for pol in combinedDict[year]:
+		i = 0
+		for file in sorted(combinedDict[year][pol]):
+			if ("ybin" in file) and ("Xic" in file):
+				y = (float(file[:-5].split('_')[-1].split('-')[0])+float(file[:-5].split('_')[-1].split('-')[1]))/2
+				y_err = (float(file[:-5].split('_')[-1].split('-')[1])-float(file[:-5].split('_')[-1].split('-')[0]))/2
+				ratio = combinedDict[year][pol][file]["yield_val"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"]
+				ratio_err = math.sqrt((combinedDict[year][pol][file]["yield_err"]/combinedDict[year][pol][file]["yield_val"])**2 + (combinedDict[year][pol]['Lc'+file[3:]]["yield_err"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"])**2)
+
+				y_dataDict[year]["x"][i] = y
+				y_dataDict[year]["y"][i] += ratio
+				y_dataDict[year]["ex"][i] = y_err
+				if y_dataDict[year]["ey"][i] == 0:
+					y_dataDict[year]["ey"][i] += ratio_err
+				else:
+					y_dataDict[year]["ey"][i] = math.sqrt(y_dataDict[year]["ey"][i]**2 + ratio_err**2)
+
+				i+=1
+    
+	for pol in combinedDict[year]:
+		i = 0
+		for file in sorted(combinedDict[year][pol]):
+			if ("ptbin" in file) and ("Xic" in file):
+				pt = (float(file[:-5].split('_')[-1].split('-')[0])+float(file[:-5].split('_')[-1].split('-')[1]))/2
+				pt_err = (float(file[:-5].split('_')[-1].split('-')[1])-float(file[:-5].split('_')[-1].split('-')[0]))/2
+				ratio = combinedDict[year][pol][file]["yield_val"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"]
+				ratio_err = math.sqrt((combinedDict[year][pol][file]["yield_err"]/combinedDict[year][pol][file]["yield_val"])**2 + (combinedDict[year][pol]['Lc'+file[3:]]["yield_err"]/combinedDict[year][pol]['Lc'+file[3:]]["yield_val"])**2)
+
+				pt_dataDict[year]["x"][i] = pt
+				pt_dataDict[year]["y"][i] += ratio
+				pt_dataDict[year]["ex"][i] = pt_err
+				pt_dataDict[year]["ey"][i] += ratio_err
+
+				i+=1
 
 
 
